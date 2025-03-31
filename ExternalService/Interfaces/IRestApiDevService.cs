@@ -10,6 +10,8 @@ namespace ExternalService.Interfaces
     public interface IRestApiDevService
     {
         Task<List<Device>> GetDevicesAsync();
+        Task<Device> CreateNewDeviceAsync(CreateDevice createDeviceRequest);
+
 
     }
 }

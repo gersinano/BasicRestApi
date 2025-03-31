@@ -52,5 +52,36 @@ namespace ExternalService
                 throw;
             }
         }
+        public async Task<Device> CreateNewDeviceAsync(CreateDevice createDeviceRequest)
+        {
+            try
+            {
+
+                var client = Factory.CreateClient("httpclient-restful-api-dev");
+
+                var jsonContent = new StringContent(JsonConvert.SerializeObject(createDeviceRequest), Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync("/objects", jsonContent);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    Device device = JsonConvert.DeserializeObject<Device>(content);
+
+                    return device;
+                }
+                else
+                {
+                    throw new HttpRequestException($"Request failed with status: {response.StatusCode}");
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting devices: {ex.Message}");
+                throw;
+            }
+        }
     }
 }

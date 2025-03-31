@@ -1,11 +1,13 @@
 ﻿using BusinessLogic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Objects;
+using System.Xml.Linq;
 
 namespace BasicRestApi.Controllers
 {
     [ApiController]
-    [Route("api/device")]
+    [Route("api/devices")]
     public class Devices : ControllerBase
     {
         private IRestApiDevLogic RestLogic;
@@ -17,11 +19,11 @@ namespace BasicRestApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Device>> GetDevices()
+        public ActionResult<IEnumerable<Device>> GetDevices([FromQuery] string? name, [FromQuery] int? page, [FromQuery] int? pageSize)
         {
             try
             {
-                List<Device> devices = RestLogic.GetDevices();
+                List<Device> devices = RestLogic.GetDevices(name, page, pageSize);
 
                 return Ok(devices);
             }
@@ -29,6 +31,27 @@ namespace BasicRestApi.Controllers
             {
                 Console.WriteLine($"Controller level - Error getting all devices: {ex.Message}");
                 throw;
+            }
+        }
+
+        [HttpPost]
+        public ActionResult<IEnumerable<Device>> CreateNewDevice([FromBody] CreateDevice createDeviceRequest)
+        {
+            try
+            {
+                Device devices = RestLogic.CreateNewDevice(createDeviceRequest);
+
+                return Ok(devices);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Controller level - Error getting all devices: {ex.Message}");
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Controller level - Error getting all devices: {ex.Message}");
+                return StatusCode(500, new { error = ex.Message });
             }
         }
     }

@@ -9,7 +9,8 @@ namespace BusinessLogic.Interfaces
 {
     public interface IRestApiDevLogic
     {
-        List<Device> GetDevices();
+        List<Device> GetDevices(string? name, int? page, int? pageSize);
+        Device CreateNewDevice(CreateDevice createNewDevice);
 
     }
 }
