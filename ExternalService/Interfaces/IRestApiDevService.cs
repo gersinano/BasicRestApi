@@ -11,6 +11,7 @@ namespace ExternalService.Interfaces
     {
         Task<List<Device>> GetDevicesAsync();
         Task<Device> CreateNewDeviceAsync(CreateDevice createDeviceRequest);
+        Task<string> DeleteDeviceAsync(string id);
 
 
     }

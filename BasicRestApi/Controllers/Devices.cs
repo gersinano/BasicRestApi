@@ -45,7 +45,7 @@ namespace BasicRestApi.Controllers
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine($"Controller level - Error getting all devices: {ex.Message}");
+                Console.WriteLine($"Controller level - BadRequest: {ex.Message}");
                 return BadRequest(new { error = ex.Message });
             }
             catch (Exception ex)
@@ -54,5 +54,27 @@ namespace BasicRestApi.Controllers
                 return StatusCode(500, new { error = ex.Message });
             }
         }
+
+        [HttpDelete("{id}")]
+        public ActionResult<IEnumerable<string>> DeleteDevice(string id)
+        {
+            try
+            {
+                string devices = RestLogic.DeleteDevice(id);
+
+                return Ok(devices);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Controller level - BadRequest: {ex.Message}");
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Controller level - Error getting all devices: {ex.Message}");
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
     }
 }

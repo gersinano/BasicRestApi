@@ -77,5 +77,22 @@ namespace BusinessLogic
             }
         }
 
+        public string DeleteDevice(string id)
+        {
+            try
+            {
+
+                string device = RestApiDevService.DeleteDeviceAsync(id).Result;
+
+                return device;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+
     }
 }

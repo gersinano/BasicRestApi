@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Reflection.Metadata;
 using System.Runtime;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -31,17 +32,17 @@ namespace ExternalService
             {
                 var client = Factory.CreateClient("httpclient-restful-api-dev");
                 HttpResponseMessage response = await client.GetAsync("/objects");
+                string content = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
                     List<Device> devices = JsonConvert.DeserializeObject<List<Device>>(content);
 
                     return devices;
                 }
                 else
                 {
-                    throw new HttpRequestException($"Request failed with status: {response.StatusCode}");
+                    throw new Exception($"Request failed with status: {response.StatusCode}, Message: {content}");
 
                 }
 
@@ -62,17 +63,45 @@ namespace ExternalService
                 var jsonContent = new StringContent(JsonConvert.SerializeObject(createDeviceRequest), Encoding.UTF8, "application/json");
 
                 HttpResponseMessage response = await client.PostAsync("/objects", jsonContent);
+                string content = await response.Content.ReadAsStringAsync();
 
                 if (response.IsSuccessStatusCode)
                 {
-                    string content = await response.Content.ReadAsStringAsync();
                     Device device = JsonConvert.DeserializeObject<Device>(content);
 
                     return device;
                 }
                 else
                 {
-                    throw new HttpRequestException($"Request failed with status: {response.StatusCode}");
+                    throw new Exception($"Request failed with status: {response.StatusCode}, Message: {content}");
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error getting devices: {ex.Message}");
+                throw;
+            }
+        }
+        
+        public async Task<string> DeleteDeviceAsync(string id)
+        {
+            try
+            {
+
+                var client = Factory.CreateClient("httpclient-restful-api-dev");
+
+                HttpResponseMessage response = await client.DeleteAsync($"/objects/{id}");
+                string content = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return content;
+                }
+                else
+                {
+                    throw new Exception($"Request failed with status: {response.StatusCode}, Message: {content}");
 
                 }
 

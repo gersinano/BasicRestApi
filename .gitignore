@@ -55,3 +55,4 @@ nunit-*.xml
 
 # Ignore .vsidx files
 *.vsidx
+/.vs/BasicRestApi/v17/.suo
